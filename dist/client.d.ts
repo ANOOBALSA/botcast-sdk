@@ -60,5 +60,21 @@ export declare class BotcastClient {
      * Shortcut to check instance connectivity status.
      */
     getStatus(): Promise<import("./types/instances.js").InstanceStatusResponse>;
+    /**
+     * Shortcut to get the device pairing QR code string.
+     */
+    getQR(): Promise<import("./types/instances.js").InstanceQRResponse>;
+    /**
+     * Shortcut to request an 8-digit phone PIN pairing code without scanning QR.
+     *
+     * @param phoneNumber Recipient phone number with country code (e.g. `201000000000` or `15551234567`)
+     */
+    pairWithCode(phoneNumber: string): Promise<import("./types/instances.js").PairCodeResponse>;
+    /**
+     * Shortcut to verify if a phone number exists on WhatsApp.
+     *
+     * @param phoneNumber The phone number to check (with country code)
+     */
+    checkNumber(phoneNumber: string): Promise<import("./types/instances.js").CheckNumberResponse>;
 }
 //# sourceMappingURL=client.d.ts.map

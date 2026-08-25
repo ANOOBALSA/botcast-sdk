@@ -100,4 +100,29 @@ export class BotcastClient {
   public async getStatus() {
     return this.instances.getStatus();
   }
+
+  /**
+   * Shortcut to get the device pairing QR code string.
+   */
+  public async getQR() {
+    return this.instances.getQR();
+  }
+
+  /**
+   * Shortcut to request an 8-digit phone PIN pairing code without scanning QR.
+   *
+   * @param phoneNumber Recipient phone number with country code (e.g. `201000000000` or `15551234567`)
+   */
+  public async pairWithCode(phoneNumber: string) {
+    return this.instances.pairWithCode(phoneNumber);
+  }
+
+  /**
+   * Shortcut to verify if a phone number exists on WhatsApp.
+   *
+   * @param phoneNumber The phone number to check (with country code)
+   */
+  public async checkNumber(phoneNumber: string) {
+    return this.instances.checkNumber(phoneNumber);
+  }
 }
