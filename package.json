@@ -1,0 +1,61 @@
+{
+  "name": "botcast-sdk",
+  "version": "1.0.1",
+  "description": "Official TypeScript/JavaScript SDK for Botcast WhatsApp Multi-Instance API Gateway",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./webhooks": {
+      "types": "./dist/webhooks/index.d.ts",
+      "import": "./dist/webhooks/index.js",
+      "require": "./dist/webhooks/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node --test test/client.test.js",
+    "prepublishOnly": "npm run build && npm test"
+  },
+  "keywords": [
+    "botcast",
+    "whatsapp",
+    "whatsapp-api",
+    "whatsapp-gateway",
+    "baileys",
+    "multi-instance",
+    "whatsapp-bot",
+    "otp",
+    "messaging",
+    "sms-alternative",
+    "webhooks"
+  ],
+  "author": "Botcast <support@botcast.site>",
+  "license": "MIT",
+  "homepage": "https://botcast.site",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ANOOBALSA/Botcast.git",
+    "directory": "packages/botcast-sdk"
+  },
+  "bugs": {
+    "url": "https://botcast.site/support"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.2"
+  }
+}
