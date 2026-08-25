@@ -1,19 +1,19 @@
-import { execSync } from 'child_process';
-import fs from 'fs';
-import path from 'path';
+import { execSync } from "child_process";
+import fs from "fs";
+import path from "path";
 
-console.log('🚀 Building botcast-sdk with TypeScript compiler...');
+console.log("🚀 Building botcast-sdk with TypeScript compiler...");
 
 // Clean dist
-fs.rmSync('dist', { recursive: true, force: true });
+fs.rmSync("dist", { recursive: true, force: true });
 
 // 1. Build ESM & Declarations
-console.log('📦 Compiling ESM & TypeScript declarations...');
-execSync('npx tsc --project tsconfig.json', { stdio: 'inherit' });
+console.log("📦 Compiling ESM & TypeScript declarations...");
+execSync("npx tsc --project tsconfig.json", { stdio: "inherit" });
 
 // 2. Build CommonJS
-console.log('📦 Compiling CommonJS modules...');
-execSync('npx tsc --project tsconfig.cjs.json', { stdio: 'inherit' });
+console.log("📦 Compiling CommonJS modules...");
+execSync("npx tsc --project tsconfig.cjs.json", { stdio: "inherit" });
 
 // Helper to recursively copy files with extension mapping
 function copyDir(src, dest, extMap = {}) {
@@ -38,16 +38,16 @@ function copyDir(src, dest, extMap = {}) {
 }
 
 // 3. Organize into dist root
-console.log('📁 Organizing distribution bundles...');
+console.log("📁 Organizing distribution bundles...");
 
 // Copy ESM files as .js (and .d.ts, .d.ts.map)
-copyDir('dist/esm', 'dist', {});
+copyDir("dist/esm", "dist", {});
 
 // Copy CJS files as .cjs
-copyDir('dist/cjs', 'dist', { '.js': '.cjs' });
+copyDir("dist/cjs", "dist", { ".js": ".cjs" });
 
 // Remove intermediate dirs
-fs.rmSync('dist/esm', { recursive: true, force: true });
-fs.rmSync('dist/cjs', { recursive: true, force: true });
+fs.rmSync("dist/esm", { recursive: true, force: true });
+fs.rmSync("dist/cjs", { recursive: true, force: true });
 
-console.log('🎉 Build completed successfully!');
+console.log("🎉 Build completed successfully!");

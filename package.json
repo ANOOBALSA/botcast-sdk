@@ -1,6 +1,6 @@
 {
   "name": "botcast-sdk",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Official TypeScript/JavaScript SDK for Botcast WhatsApp Multi-Instance API Gateway",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -46,7 +46,7 @@
   "homepage": "https://botcast.site",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ANOOBALSA/Botcast.git",
+    "url": "git+https://github.com/ANOOBALSA/botcast-sdk.git",
     "directory": "packages/botcast-sdk"
   },
   "bugs": {
@@ -56,6 +56,6 @@
     "node": ">=18.0.0"
   },
   "devDependencies": {
-    "typescript": "^5.8.2"
+    "typescript": "^5.9.3"
   }
 }
