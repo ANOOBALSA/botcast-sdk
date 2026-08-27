@@ -83,7 +83,9 @@ export declare class MessagesModule extends BaseModule {
      * Sends a contact vCard card.
      */
     sendContact(recipient: string, contact: {
-        displayName: string;
+        displayName?: string;
+        firstName?: string;
+        phone?: string;
         vcard?: string;
         contacts?: Array<{
             displayName: string;

@@ -53,6 +53,13 @@ export class MessagesModule extends BaseModule {
     recipient: string,
     options?: SendOTPOptions
   ): Promise<SendMessageResponse & { codeSent: string }> {
+    if (this.config.platform === 'telegram') {
+      return this.send({
+        recipient,
+        type: 'otp',
+        ...options,
+      }) as any;
+    }
     return this.request({
       method: 'POST',
       path: this.buildPath('otp'),
@@ -181,9 +188,17 @@ export class MessagesModule extends BaseModule {
    */
   public async sendContact(
     recipient: string,
-    contact: { displayName: string; vcard?: string; contacts?: Array<{ displayName: string; vcard: string }> },
+    contact: { displayName?: string; firstName?: string; phone?: string; vcard?: string; contacts?: Array<{ displayName: string; vcard: string }> },
     options?: BaseMessageOptions
   ): Promise<SendMessageResponse> {
+    if (this.config.platform === 'telegram') {
+      return this.send({
+        recipient,
+        type: 'contact',
+        ...contact,
+        ...options,
+      });
+    }
     return this.request({
       method: 'POST',
       path: this.buildPath('messages/contact'),

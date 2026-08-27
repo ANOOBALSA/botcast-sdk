@@ -35,6 +35,13 @@ class MessagesModule extends base_js_1.BaseModule {
      * @param options OTP configuration (code, app name, expiry minutes)
      */
     async sendOTP(recipient, options) {
+        if (this.config.platform === 'telegram') {
+            return this.send({
+                recipient,
+                type: 'otp',
+                ...options,
+            });
+        }
         return this.request({
             method: 'POST',
             path: this.buildPath('otp'),
@@ -126,6 +133,14 @@ class MessagesModule extends base_js_1.BaseModule {
      * Sends a contact vCard card.
      */
     async sendContact(recipient, contact, options) {
+        if (this.config.platform === 'telegram') {
+            return this.send({
+                recipient,
+                type: 'contact',
+                ...contact,
+                ...options,
+            });
+        }
         return this.request({
             method: 'POST',
             path: this.buildPath('messages/contact'),

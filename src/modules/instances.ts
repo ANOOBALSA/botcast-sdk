@@ -33,15 +33,30 @@ export class InstancesModule extends BaseModule {
   }
 
   /**
-   * Generates an 8-digit phone pairing code for headless WhatsApp linking without scanning QR.
+   * Generates a pairing / login code for phone number authentication.
    *
-   * @param phoneNumber Recipient phone number with country code (e.g. `201000000000` or `15551234567`)
+   * @param phoneNumber Phone number with country code (e.g. `201000000000` or `15551234567`)
    */
   public async pairWithCode(phoneNumber: string): Promise<PairCodeResponse> {
     return this.request<PairCodeResponse>({
       method: 'POST',
       path: this.buildPath('pair-code'),
       body: { phoneNumber },
+    });
+  }
+
+  /**
+   * Completes phone code verification (e.g. for Telegram login with optional 2FA password).
+   */
+  public async verifyCode(
+    phoneNumber: string,
+    code: string,
+    password?: string
+  ): Promise<{ success: boolean; status: string; user?: any; message?: string }> {
+    return this.request({
+      method: 'POST',
+      path: this.buildPath('verify-code'),
+      body: { phoneNumber, code, password },
     });
   }
 

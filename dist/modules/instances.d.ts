@@ -10,11 +10,20 @@ export declare class InstancesModule extends BaseModule {
      */
     getQR(): Promise<InstanceQRResponse>;
     /**
-     * Generates an 8-digit phone pairing code for headless WhatsApp linking without scanning QR.
+     * Generates a pairing / login code for phone number authentication.
      *
-     * @param phoneNumber Recipient phone number with country code (e.g. `201000000000` or `15551234567`)
+     * @param phoneNumber Phone number with country code (e.g. `201000000000` or `15551234567`)
      */
     pairWithCode(phoneNumber: string): Promise<PairCodeResponse>;
+    /**
+     * Completes phone code verification (e.g. for Telegram login with optional 2FA password).
+     */
+    verifyCode(phoneNumber: string, code: string, password?: string): Promise<{
+        success: boolean;
+        status: string;
+        user?: any;
+        message?: string;
+    }>;
     /**
      * Boots up the WhatsApp socket connection.
      *

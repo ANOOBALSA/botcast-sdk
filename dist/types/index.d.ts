@@ -11,6 +11,10 @@ export interface BotcastClientConfig {
      */
     baseUrl?: string;
     /**
+     * Platform type: 'whatsapp' or 'telegram'. Default: 'whatsapp'.
+     */
+    platform?: 'whatsapp' | 'telegram';
+    /**
      * Your unique Botcast Instance ID.
      */
     instanceId: string;

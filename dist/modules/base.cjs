@@ -8,11 +8,12 @@ class BaseModule {
         this.config = config;
     }
     /**
-     * Builds the instance-specific URL path prefix: `/whatsapp/:instanceId/:instanceToken/...`
+     * Builds the instance-specific URL path prefix: `/:platform/:instanceId/:instanceToken/...`
      */
     buildPath(subPath) {
+        const platform = this.config.platform || 'whatsapp';
         const cleanSubPath = subPath.startsWith('/') ? subPath.slice(1) : subPath;
-        return `/whatsapp/${encodeURIComponent(this.config.instanceId)}/${encodeURIComponent(this.config.instanceToken)}/${cleanSubPath}`;
+        return `/${platform}/${encodeURIComponent(this.config.instanceId)}/${encodeURIComponent(this.config.instanceToken)}/${cleanSubPath}`;
     }
     /**
      * Executes an HTTP request against the Botcast API Gateway with retry & error translation.

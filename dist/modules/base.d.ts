@@ -10,7 +10,7 @@ export declare class BaseModule {
     protected config: Required<BotcastClientConfig>;
     constructor(config: Required<BotcastClientConfig>);
     /**
-     * Builds the instance-specific URL path prefix: `/whatsapp/:instanceId/:instanceToken/...`
+     * Builds the instance-specific URL path prefix: `/:platform/:instanceId/:instanceToken/...`
      */
     protected buildPath(subPath: string): string;
     /**

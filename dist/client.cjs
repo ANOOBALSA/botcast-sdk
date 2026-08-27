@@ -52,6 +52,7 @@ class BotcastClient {
         }
         this.config = {
             baseUrl: config.baseUrl || 'https://botcast.site',
+            platform: config.platform || 'whatsapp',
             instanceId: config.instanceId,
             instanceToken: config.instanceToken,
             timeout: config.timeout || 30000,
