@@ -1,4 +1,5 @@
 export { BotcastClient } from './client.js';
+export { BotcastAdminClient } from './admin.js';
 export { BotcastWebhook } from './webhooks/index.js';
 export * from './errors.js';
 export * from './types/index.js';
