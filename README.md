@@ -41,7 +41,36 @@ bun add botcast-sdk
 
 ## Quick Start
 
-### 1. WhatsApp Client
+### 1. Admin & Fleet Management (Create, Manage & Renew Instances)
+
+Use `BotcastAdminClient` with your Master Partner API Key (`bcast_live_...`) to programmatically create and manage customer instances:
+
+```typescript
+import { BotcastAdminClient } from 'botcast-sdk';
+
+const admin = new BotcastAdminClient({
+  baseUrl: 'https://botcast.site',
+  apiKey: process.env.BOTCAST_API_KEY!, // Master API Key
+});
+
+// List all instances
+const { instances } = await admin.listInstances();
+
+// Create a new WhatsApp or Telegram instance for a customer
+const { instance } = await admin.createInstance({
+  name: 'Customer Store 1',
+  platform: 'whatsapp',
+  type: 'paid',
+  plan_months: 12,
+});
+
+// Renew subscription
+await admin.renewInstance(instance.id, { months: 12 });
+```
+
+---
+
+### 2. WhatsApp Client
 
 ```typescript
 import { BotcastClient } from 'botcast-sdk';
