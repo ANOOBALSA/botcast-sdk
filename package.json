@@ -51,7 +51,7 @@
   "homepage": "https://botcast.site",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ANOOBALSA/botcast-sdk.git",
+    "url": "git+https://github.com/alsasoft-web/botcast-sdk.git",
     "directory": "packages/botcast-sdk"
   },
   "bugs": {
