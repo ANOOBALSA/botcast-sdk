@@ -155,3 +155,74 @@ test('BotcastClient handles 402 payment required and 429 rate limit correctly', 
     }
   );
 });
+
+test('BotcastAdminClient supports setting exact expiration dates on create, update, renew and setExpiration', async (t) => {
+  const { BotcastAdminClient } = await import('../dist/index.js');
+  const originalFetch = global.fetch;
+  const calls = [];
+
+  global.fetch = async (url, options) => {
+    calls.push({
+      url: url.toString(),
+      method: options.method,
+      headers: options.headers,
+      body: options.body ? JSON.parse(options.body) : null,
+    });
+
+    return {
+      ok: true,
+      status: 200,
+      headers: new Headers({ 'content-type': 'application/json' }),
+      json: async () => ({
+        success: true,
+        message: 'Success',
+        instance: {
+          id: 'ins_paid_test',
+          name: 'Test Instance',
+          expires_at: '2027-01-01T00:00:00.000Z',
+        },
+      }),
+    };
+  };
+
+  t.after(() => {
+    global.fetch = originalFetch;
+  });
+
+  const admin = new BotcastAdminClient({
+    baseUrl: 'https://api.botcast.site',
+    apiKey: 'bcast_live_adminkey123',
+  });
+
+  // 1. createInstance with exact expiration date
+  await admin.createInstance({
+    name: 'Customer WhatsApp',
+    expires_at: '2027-01-01T00:00:00.000Z',
+  });
+  assert.strictEqual(calls[0].url, 'https://api.botcast.site/api/instances');
+  assert.strictEqual(calls[0].method, 'POST');
+  assert.strictEqual(calls[0].body.expires_at, '2027-01-01T00:00:00.000Z');
+  assert.strictEqual(calls[0].headers['x-api-key'], 'bcast_live_adminkey123');
+
+  // 2. renewInstance with exact expiration date
+  await admin.renewInstance('ins_paid_test', {
+    expires_at: new Date('2028-06-01T00:00:00.000Z'),
+  });
+  assert.strictEqual(calls[1].url, 'https://api.botcast.site/api/instances/ins_paid_test/renew');
+  assert.strictEqual(calls[1].method, 'POST');
+  assert.strictEqual(calls[1].body.expires_at, '2028-06-01T00:00:00.000Z');
+
+  // 3. updateInstance with exact expiration date
+  await admin.updateInstance('ins_paid_test', {
+    expires_at: '2029-01-01T00:00:00.000Z',
+  });
+  assert.strictEqual(calls[2].url, 'https://api.botcast.site/api/instances/ins_paid_test');
+  assert.strictEqual(calls[2].method, 'PUT');
+  assert.strictEqual(calls[2].body.expires_at, '2029-01-01T00:00:00.000Z');
+
+  // 4. setExpiration helper
+  await admin.setExpiration('ins_paid_test', '2030-01-01T00:00:00.000Z');
+  assert.strictEqual(calls[3].url, 'https://api.botcast.site/api/instances/ins_paid_test');
+  assert.strictEqual(calls[3].method, 'PUT');
+  assert.strictEqual(calls[3].body.expires_at, '2030-01-01T00:00:00.000Z');
+});

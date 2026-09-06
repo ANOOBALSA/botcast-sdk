@@ -15,6 +15,8 @@ export interface CreateAdminInstanceOptions {
   allowed_numbers?: string[];
   webhook_url?: string;
   target_user_id?: number;
+  expires_at?: string | Date;
+  expiresAt?: string | Date;
 }
 
 export interface AdminInstanceRecord {
@@ -111,6 +113,13 @@ export class BotcastAdminClient {
     message: string;
     instance: AdminInstanceRecord;
   }> {
+    const rawExp = options.expires_at || options.expiresAt;
+    const expires_at = rawExp
+      ? rawExp instanceof Date
+        ? rawExp.toISOString()
+        : new Date(rawExp).toISOString()
+      : undefined;
+
     return this.request('/api/instances', {
       method: 'POST',
       body: JSON.stringify({
@@ -121,36 +130,83 @@ export class BotcastAdminClient {
         allowed_numbers: options.allowed_numbers || [],
         webhook_url: options.webhook_url || '',
         target_user_id: options.target_user_id,
+        expires_at,
       }),
     });
   }
 
   /**
    * Programmatically renews an instance's subscription without payment transactions.
+   * Supports either extending by months or setting an exact expiration date.
    */
   public async renewInstance(
     instanceId: string,
-    options?: { months?: number; plan_months?: number }
+    options?: {
+      months?: number;
+      plan_months?: number;
+      expires_at?: string | Date;
+      expiresAt?: string | Date;
+    }
   ): Promise<{ success: boolean; message: string; instance: AdminInstanceRecord }> {
+    const rawExp = options?.expires_at || options?.expiresAt;
+    const expires_at = rawExp
+      ? rawExp instanceof Date
+        ? rawExp.toISOString()
+        : new Date(rawExp).toISOString()
+      : undefined;
+
     return this.request(`/api/instances/${instanceId}/renew`, {
       method: 'POST',
       body: JSON.stringify({
-        months: options?.months || options?.plan_months || 12,
+        months: options?.months || options?.plan_months || (expires_at ? undefined : 12),
+        expires_at,
       }),
     });
   }
 
   /**
-   * Updates instance configuration (name, webhook URL, allowed recipient numbers).
+   * Updates instance configuration (name, webhook URL, allowed recipient numbers, expiration date).
    */
   public async updateInstance(
     instanceId: string,
-    updates: { name?: string; webhook_url?: string; allowed_numbers?: string[] }
+    updates: {
+      name?: string;
+      webhook_url?: string;
+      allowed_numbers?: string[];
+      expires_at?: string | Date | null;
+      expiresAt?: string | Date | null;
+    }
   ): Promise<{ message: string; instance: AdminInstanceRecord }> {
+    const rawExp = updates.expires_at !== undefined ? updates.expires_at : updates.expiresAt;
+    let expires_at: string | null | undefined = undefined;
+    if (rawExp !== undefined) {
+      if (rawExp === null) {
+        expires_at = null;
+      } else {
+        expires_at = rawExp instanceof Date ? rawExp.toISOString() : new Date(rawExp).toISOString();
+      }
+    }
+
     return this.request(`/api/instances/${instanceId}`, {
       method: 'PUT',
-      body: JSON.stringify(updates),
+      body: JSON.stringify({
+        ...updates,
+        expires_at,
+      }),
     });
+  }
+
+  /**
+   * Directly sets or clears the exact expiration date for an instance.
+   *
+   * @param instanceId Target instance ID (e.g. `ins_paid_...`)
+   * @param expiresAt Date instance, ISO string (e.g. `2027-01-01T00:00:00.000Z`), or `null` to remove expiry.
+   */
+  public async setExpiration(
+    instanceId: string,
+    expiresAt: string | Date | null
+  ): Promise<{ message: string; instance: AdminInstanceRecord }> {
+    return this.updateInstance(instanceId, { expires_at: expiresAt });
   }
 
   /**

@@ -103,7 +103,8 @@ const { instance } = await admin.createInstance({
   name: 'Store Branch 1',
   platform: 'whatsapp',        // 'whatsapp' | 'telegram'
   type: 'paid',               // 'paid' | 'dev'
-  plan_months: 12,            // 12 months subscription
+  plan_months: 12,            // 12 months subscription (or set exact expires_at below)
+  expires_at: '2027-12-31T23:59:59.000Z', // Optional: Set exact expiration date
   webhook_url: 'https://myapp.com/api/webhooks/botcast',
   allowed_numbers: [],        // Empty for paid (unlimited), or list of sandbox numbers for dev
 });
@@ -113,26 +114,36 @@ console.log('Instance Token:', instance.instance_token);
 // Store instance.id and instance.instance_token in your database
 ```
 
-### Renew an Instance
+### Renew / Extend an Instance
 
-Extends the instance's subscription directly without creating transactions:
+Extends the instance's subscription directly by month count or by setting an exact date:
 
 ```typescript
+// Option A: Extend by months
 const result = await admin.renewInstance('ins_paid_abc123', {
   months: 12, // Extend by 12 months
+});
+
+// Option B: Set exact expiration date
+const resultExact = await admin.renewInstance('ins_paid_abc123', {
+  expires_at: '2028-06-30T23:59:59.000Z',
 });
 
 console.log(result.message);
 console.log('New Expiry Date:', result.instance.expires_at);
 ```
 
-### Update Instance Settings
+### Update Instance Settings & Expiration
 
 ```typescript
 await admin.updateInstance('ins_paid_abc123', {
   name: 'Updated Store Name',
   webhook_url: 'https://myapp.com/api/v2/webhooks',
+  expires_at: '2028-01-01T00:00:00.000Z', // Optional: Set new exact expiration date
 });
+
+// Or use the dedicated expiration helper:
+await admin.setExpiration('ins_paid_abc123', '2028-01-01T00:00:00.000Z');
 ```
 
 ### Regenerate Instance Token

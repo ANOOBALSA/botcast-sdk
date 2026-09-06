@@ -62,10 +62,12 @@ const { instance } = await admin.createInstance({
   platform: "whatsapp",
   type: "paid",
   plan_months: 12,
+  expires_at: "2027-12-31T23:59:59.000Z", // Optional exact expiration date
 });
 
-// Renew subscription
+// Renew subscription (by months or exact date)
 await admin.renewInstance(instance.id, { months: 12 });
+// or: await admin.setExpiration(instance.id, "2028-06-30T23:59:59.000Z");
 ```
 
 ---
